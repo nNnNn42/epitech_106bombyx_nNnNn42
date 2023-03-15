@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+
+import sys
+import math
+
+#imprimer usage
+def man_help():
+    print("USAGE")
+    print("\t./106bombyx n [k | i0 i1]")
+    print("\nDESCRIPTION")
+    print("\tn\tnumber of first generation individuals")
+    print("\tk\tgrowth rate from 1 to 4")
+    print("\ti0\tinitial generation (included)")
+    print("\ti1\tfinal generation (included)")
+
+#argument valide (nombre et decimal)
+def valid_string(string):
+    i = 0
+    while i < len(string):
+        if string[i] < '.' and string[i] > '/' and (string[i] < '0' or string[i] > '9'):
+            sys.stdout.write("Invalid argument")
+            exit(84)
+        i += 1
+
+#print nombre individus jusqu'à 100ème gen
+#basé sur population n et taux croissance k
+def individ(n, k):
+    i = 1
+    print(str(i) + " " + str(round(n, 2)) + "0")
+    while i < 100:
+        n = k * n * ((1000 - n) / 1000)
+        if n < 0:
+            n = 0
+        i += 1
+        if float(str("%.1f" % (n))) == round(n, 2):
+            print(str(i) + " " + str(round(n, 2)) + "0")
+        else:
+            print(str(i) + " " + str(round(n, 2)))
+
+#calcule et print nombre individus chaque gen
+#seulement si 4 arg
+def gen(n, i0, i1):
+    k = float(1)
+    tmp = n
+    while k < 4:
+        i = 1
+        n = float(tmp)
+        while i < i0:
+            n = k * n * ((1000 - n) / 1000)
+            if n < 0:
+                n = 0
+            i += 1
+        while i <= i1:
+            if float(str("%.1f" % (n))) == round(n, 2):
+                print("%.2f" % k + " " + str(round(n, 2)) + "0")
+            else:
+                print("%.2f" % k + " " + str(round(n, 2)))
+            n = k * n * ((1000 - n) / 1000)
+            if n < 0:
+                n = 0
+            i += 1
+        k += 0.01
+
+#main : gest err et exec
+if len(sys.argv) == 2 or len(sys.argv) == 3 or len(sys.argv) == 4:
+    i = 0
+    d = 1
+    num_arg = len(sys.argv)
+    if sys.argv[1] == "-h":
+        man_help()
+        exit(0)
+    elif num_arg == 2:
+        sys.stdout.write("Invalid number of argument\n")
+        exit(84)
+    while d < num_arg:
+        valid_string(sys.argv[d])
+        d += 1
+    if float(sys.argv[1]) < 0:
+        sys.stdout.write("n can't be negative\n")
+        exit(84)
+    if num_arg == 3:
+        n = float(sys.argv[1])
+        if float(sys.argv[2]) < 1 or float(sys.argv[2]) > 4:
+            exit(84)
+        k = float(sys.argv[2])
+        individ(n, k)
+    elif num_arg == 4:
+        n = float(sys.argv[1])
+        try:
+            i0 = int(sys.argv[2])
+            i1 = int(sys.argv[3])
+        except ValueError:
+            sys.stdout.write("Invalid argument\n")
